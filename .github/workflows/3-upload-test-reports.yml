@@ -46,7 +46,7 @@ env: >-
       ${{ !github.event.repository.is_template
           && needs.get_current_step.outputs.current_step == 3 }}
 
-build:
+  build:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -60,6 +60,6 @@ build:
       with:
         name: remark-lint-report
         path: remark-lint-report.json
-        from_step: 3
-        to_step: 4
-        branch_name: ci
+      from_step: 3
+      to_step: 4
+      branch_name: ci
