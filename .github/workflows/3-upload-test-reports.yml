@@ -33,7 +33,7 @@ jobs:
     outputs:
       current_step: ${{ steps.get_step.outputs.current_step }}
 defaults:
-  name: On add test reporting
+  needs: On add test reporting
   needs: get_current_step
     # We will only run this action when:
     # 1. This repository isn't the template repository.
