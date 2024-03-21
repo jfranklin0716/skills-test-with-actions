@@ -33,22 +33,22 @@ jobs:
     outputs:
       current_step: ${{ steps.get_step.outputs.current_step }}
 
-  on_add_test_reporting:
-    name: On add test reporting
-    needs: get_current_step
+defaults:
+     name: On add test reporting
+     needs: get_current_step
 
     # We will only run this action when:
     # 1. This repository isn't the template repository.
     # 2. The step is currently 3.
     # Reference: https://docs.github.com/actions/learn-github-actions/contexts
     # Reference: https://docs.github.com/actions/learn-github-actions/expressions
-    if: >-
+env: >-
       ${{ !github.event.repository.is_template
           && needs.get_current_step.outputs.current_step == 3 }}
 
-    build:
-  runs-on: ubuntu-latest
-  steps:
+build:
+    runs-on: ubuntu-latest
+    steps:
     - uses: actions/checkout@v4
 
     - name: Run markdown lint
@@ -60,6 +60,6 @@ jobs:
       with:
         name: remark-lint-report
         path: remark-lint-report.json
-          from_step: 3
-          to_step: 4
-          branch_name: ci
+        from_step: 3
+        to_step: 4
+        branch_name: ci
