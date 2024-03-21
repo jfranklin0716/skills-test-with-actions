@@ -45,7 +45,7 @@ defaults:
 env: >-
       ${{ !github.event.repository.is_template
           && needs.get_current_step.outputs.current_step == 3 }}
-      build:
+build:
       runs-on: ubuntu-latest
       steps:
       - uses: actions/checkout@v4
@@ -54,8 +54,7 @@ env: >-
       run: |
         npm install remark-cli remark-preset-lint-consistent vfile-reporter-json
         npx remark . --use remark-preset-lint-consistent --report vfile-reporter-json 2> remark-lint-report.json
-
-      - uses: actions/upload-artifact@v3
+        - uses: actions/upload-artifact@v3
       with:
         name: remark-lint-report
         path: remark-lint-report.json
