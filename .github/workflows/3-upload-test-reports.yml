@@ -56,18 +56,12 @@ jobs:
         with:
           fetch-depth: 0 # Let's get all the branches.
 
-      # Verify the learner added actions/upload-artifact.
-      - name: Verify workflow
-        uses: skills/action-check-file@v1
-        with:
-          file: .github/workflows/ci.yml
-          search: actions/upload-artifact
+    - name: Run markdown lint
+      run: |
+        npm install remark-cli remark-preset-lint-consistent vfile-reporter-json
+        npx remark . --use remark-preset-lint-consistent --report vfile-reporter-json 2> remark-lint-report.json
 
-      # In README.md, switch step 3 for step 4.
-      - name: Update to step 4
-        uses: skills/action-update-step@v2
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          from_step: 3
-          to_step: 4
-          branch_name: ci
+    - uses: actions/upload-artifact@v3
+      with:
+        name: remark-lint-report
+        path: remark-lint-report.json
