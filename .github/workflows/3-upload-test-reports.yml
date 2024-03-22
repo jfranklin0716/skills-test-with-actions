@@ -32,6 +32,7 @@ jobs:
           echo "current_step=$(cat ./.github/steps/-step.txt)" >> $GITHUB_OUTPUT
     outputs:
       current_step: ${{ steps.get_step.outputs.current_step }}
+
   on_add_test_reporting:
     name: On add test reporting
     needs: get_current_step
@@ -55,13 +56,18 @@ jobs:
         with:
           fetch-depth: 0 # Let's get all the branches.
 
-      - name: Run markdown lint
-        run: |
-          npm install remark-cli remark-preset-lint-consistent vfile-reporter-json
-          npx remark . --use remark-preset-lint-consistent --report vfile-reporter-json 2> remark-lint-report.json
-
-      - uses: actions/upload-artifact@v3
+      # Verify the learner added actions/upload-artifact.
+      - name: Verify workflow
+        uses: skills/action-check-file@v1
         with:
-          name: remark-lint-report
-          path: remark-lint-report.json
-  
+          file: .github/workflows/ci.yml
+          search: actions/upload-artifact
+
+      # In README.md, switch step 3 for step 4.
+      - name: Update to step 4
+        uses: skills/action-update-step@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          from_step: 3
+          to_step: 4
+          branch_name: ci
