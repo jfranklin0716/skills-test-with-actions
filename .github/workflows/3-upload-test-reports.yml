@@ -47,27 +47,17 @@ jobs:
           && needs.get_current_step.outputs.current_step == 3 }}
 
     # We'll run Ubuntu for performance instead of Mac or Windows.
-    runs-on: ubuntu-latest
-
+    build:
+      runs-on: ubuntu-latest
     steps:
-      # We'll need to check out the repository so that we can edit the README.
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0 # Let's get all the branches.
+    - uses: actions/checkout@v4
 
-      # Verify the learner added actions/upload-artifact.
-      - name: Verify workflow
-        uses: skills/action-check-file@v1
-        with:
-          file: .github/workflows/ci.yml
-          search: actions/upload-artifact
+    - name: Run markdown lint
+      run: |
+        npm install remark-cli remark-preset-lint-consistent vfile-reporter-json
+        npx remark . --use remark-preset-lint-consistent --report vfile-reporter-json 2> remark-lint-report.json
 
-      # In README.md, switch step 3 for step 4.
-      - name: Update to step 4
-        uses: skills/action-update-step@v2
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          from_step: 3
-          to_step: 4
-          branch_name: ci
+    - uses: actions/upload-artifact@v3
+      with:
+        name: remark-lint-report
+        path: remark-lint-report.json
